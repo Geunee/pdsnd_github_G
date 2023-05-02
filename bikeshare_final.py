@@ -2,151 +2,61 @@ import time
 import pandas as pd
 import numpy as np
 
-#update
-
-#smt changes
-#we need to add city later...
 
 CITY_DATA = { 'chicago': 'chicago.csv',
-              'new york city': 'new_york_city.csv',
+              'new york': 'new_york_city.csv',
               'washington': 'washington.csv' }
 
-def get_filters():
-    """
-    Asks user to specify a city, month, and day to analyze.
+# Cities, months and days for filters 
+cities = ['chicago', 'new york', 'washington']
+months = ['january', 'february', 'march', 'april', 'may', 'june', 'all']
+days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'all']
 
+def get_filters():
+    """Asks user to specify a city, month, and day to analyze.
     Returns:
         (str) city - name of the city to analyze
         (str) month - name of the month to filter by, or "all" to apply no month filter
         (str) day - name of the day of week to filter by, or "all" to apply no day filter
     """
-    print('Hello! Let\'s explore some US bikeshare data!')
-    # TO DO: get user input for city (chicago, new york city, washington). HINT: Use a while loop to handle invalid inputs
-    while True:
-        city_input = input('''
-        Which city do you want filter by?
-        
-        1. CHICAGO
-        2. NEW_YORK_CITY
-        3. WASHINGTON
 
-        Plese input city's number
-
-        ''')
-        
-        city = int(city_input)
-
-        if city not in (1, 2, 3):
-            print('Sorry, Try again')
-            continue
-        else:
-            if city == 1:
-                city = 'chicago'
-            elif city == 2:
-                city = 'new york city'
-            elif city == 3:
-                city = 'washington'
-            
-            print(f'"The city which you want is {city} "')
-            break
+    print("Hello! Let's explore some US bikeshare data!")
     
-
-        # TO DO: get user input for month (all, january, february, ... , june)
+    # Get user input for city (Chicago, New York, Washington). Use a while loop to handle invalid inputs.
     while True:
-        month_input = input('''
-        Which month do you want filter by?
-        
-        1. all
-        2. January
-        3. February
-        4. March
-        5. April
-        6. May
-        7. June
-        
-        Plese input month's number
-
-        ''')
-        
-        month = int(month_input)
-
-        if month not in (1, 2, 3, 4, 5, 6, 7):
-            print('Sorry, Try again')
-            continue
-        else:
-            if month == 1:
-                month = 'all'
-            elif month == 2:
-                month = 'January'
-            elif month == 3:
-                month = 'February'
-            elif month == 4:
-                month = 'March'
-            elif month == 5:
-                month = 'April'
-            elif month == 6:
-                month = "May"
-            elif month == 7:
-                month = "June"
-                    
-            
-            print(f'"The month which you want is {month} "')
+        city =input("Which city would you like to see? :\n Chicago, New York, or Washington\n").lower()
+        if city in cities:
             break
-
-
-        # TO DO: get user input for day of week (all, monday, tuesday, ... sunday)
+        else:
+            print('Sorry, Try again.')
+            
+    # Get filter by month, day, or no.
     while True:
-        day_input = input('''
-        Which day do you want filter by?
-        
-        1. all
-        2. monday
-        3. tuesday
-        4. wednesday
-        5. thursday
-        6. friday
-        7. saturday
-        8. sunday
-        
-        Plese input day's number
-
-        ''')
-        
-        day = int(day_input)
-
-        if day not in (1, 2, 3, 4, 5, 6, 7, 8):
-            print('Sorry, Try again')
-            continue
-        else:
-            if day == 1:
-                day = 'all'
-            elif day == 2:
-                day = 'monday'
-            elif day == 3:
-                day = 'tuesday'
-            elif day == 4:
-                day = 'wednesday'
-            elif day == 5:
-                day = 'thursday'
-            elif day == 6:
-                day = "saturday"
-            elif day == 7:
-                day = "sunday"
-                    
-            
-            print(f'"The day which you want is {day} "')
+        choice = input("Would you like to filter the data by month, day, or none?\n").lower()
+        if choice == 'month':
+            month = input("Please enter the month you want. Enter 'all' for no filter. \nChoices: All, January, February, March, April, May, June\n").lower()
+            day = 'all'
+            if month in months:
+                break
+            else:
+                print('Sorry, Try again.')
+        elif choice == 'day':
+            day = input("Please enter the day of the week you want. Enter 'all' for no filter. \nChoices: All, Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday\n").lower()
+            month = 'all'
+            if day in days:
+                break
+            else:
+                print('Sorry, Try again.')
+        elif choice == 'none':
+            month = 'all'
+            day = 'all'
             break
-
-
     print('-'*40)
-
     return city, month, day
-
 
 def load_data(city, month, day):
     """
     Loads data for the specified city and filters by month and day if applicable.
-
     Args:
         (str) city - name of the city to analyze
         (str) month - name of the month to filter by, or "all" to apply no month filter
@@ -154,42 +64,72 @@ def load_data(city, month, day):
     Returns:
         df - Pandas DataFrame containing city data filtered by month and day
     """
+    
+    # Load data file into a dataframe
     df = pd.read_csv(CITY_DATA[city])
+    
+    # Convert the Start Time column to datetime
     df['Start Time'] = pd.to_datetime(df['Start Time'])
-    df['month'] = df['Start Time'].dt.month
-    df['day_of_week'] = df['Start Time'].dt.day_name()
 
+    # Extract month and day of week from Start Time to create new columns
+    df['month'] = df['Start Time'].dt.month
+    df['day_of_week'] = df['Start Time'].dt.weekday_name
+
+    # Filter by month if applicable
     if month != 'all':
-        months = ['January', 'February', 'March', 'April', 'May', 'June']
+        # Use the index of the months list to get the corresponding int
+        months = ['january', 'february', 'march', 'april', 'may', 'june']
         month = months.index(month) + 1
 
+        # Filter by month to create the new dataframe
         df = df[df['month'] == month]
 
-    if day != 'all':
+    # Filter by day of week if applicable
+    if day != 'all': 
+        # Filter by day of week to create the new dataframe
         df = df[df['day_of_week'] == day.title()]
-
     return df
-
 
 def time_stats(df):
     """Displays statistics on the most frequent times of travel."""
 
-    print('\nCalculating The Most Frequent Times of Travel...\n')
-    start_time = time.time()
-   
-    # TO DO: display the most common month
-    try:
-        most_mon = df['month'].mode()[0]
-        print(f'"The most common month : {most_mon}"')
-    except KeyError:
-        print("no data")
 
-    # TO DO: display the most common day of week
-    try:
-        most_day = df['day_of_week'].mode()[0]
-        print("The most common day of week :", most_day)
-    except KeyError:
-        print('no data')
+
+    print('\nCalculating The Most Popular Times of Travel...\n')
+    start_time = time.time()
+
+    # Convert the Start Time column to datetime
+    df['Start Time'] = pd.to_datetime(df['Start Time'])
+    
+    # Extract month from start time column to create month column 
+    df['month'] = df['Start Time'].dt.month
+    most_month = df['month'].mode()[0]
+    
+    # Alternative code option to simplify code
+    
+    '''
+    #import calendar
+    #most_month = calendar.month_name[most_month]
+    '''
+    
+    # Change month to number
+    if most_month == 1:
+    most_month = "January"
+elif most_month == 2:
+    most_month = "February"
+elif most_month == 3:
+    most_month = "March"
+elif most_month == 4:
+    most_month = "April"
+elif most_month == 5:
+    most_month = "May"
+elif most_month == 6:
+    most_month = "June"
+    print('Most Common Month: \n', most_month)
+    
+    # Display the most common day of the week
+    most_day = df['day_of_week'].mode()[0] 
+    print('The most common day of the week: \n', most_day) 
 
     # TO DO: display the most common start hour
     df['hour'] = df['Start Time'].dt.hour
@@ -198,7 +138,6 @@ def time_stats(df):
 
     print("\nThis took %s seconds." % (time.time() - start_time))
     print('-'*40)
-
 
 def station_stats(df):
     """Displays statistics on the most popular stations and trip."""
@@ -251,21 +190,34 @@ def user_stats(df):
 
     # TO DO: Display counts of user types
     user_types = df['User Type'].value_counts()
-    print('user_types : ', user_types)
+    #print(user_types)
+    print('User Types : ', user_types)
 
     # TO DO: Display counts of gender
-    gender_types = df['Gender'].value_counts()
-    print('gender_types : ', gender_types)
+    try:
+      gender_types = df['Gender'].value_counts()
+      print('Gender Types : ', gender_types)
+    except KeyError:
+      print("Gender Types: No data available for this month.")
 
     # TO DO: Display earliest, most recent, and most common year of birth
-    earlist = df['Birth Year'].min()
-    print('earliest :', int(earlist))
+    try:
+      earliest = df['Birth Year'].min()
+      print('earliest: ', earliest)
+    except KeyError:
+      print("earliest year: No data available for this month.")
 
-    most_recent = df['Birth Year'].max()
-    print('most recent :', int(most_recent))
+    try:
+      most_recent = df['Birth Year'].max()
+      print('most recent:', most_recent)
+    except KeyError:
+      print("most recent year: No data available for this month.")
 
-    most_common = df['Birth Year'].mode()
-    print('most common :', int(most_common))
+    try:
+      most_common = df['Birth Year'].value_counts().idxmax()
+      print('most common year:', most_common)
+    except KeyError:
+      print("most Common Year: No data available for this month.")
 
     print("\nThis took %s seconds." % (time.time() - start_time))
     print('-'*40)
