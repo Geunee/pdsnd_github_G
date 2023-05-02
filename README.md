@@ -1,28 +1,31 @@
->**Note**: Please **fork** the current Udacity repository so that you will have a **remote** repository in **your** Github account. Clone the remote repository to your local machine. Later, as a part of the project "Post your Work on Github", you will push your proposed changes to the remote repository in your Github account.
+## Date created
 
-### update sth
-This line is the something update line.
+22nd January 2023
 
-## update line 22
-hihi
+## Project Title
 
-### One more change
-add line 1
-add line 2
-add line 3
+Udacity-bikeshare-project
 
-### Date created
-Include the date you created this project and README file.
+## Project Details
 
-### Project Title
-Replace the Project Title
+Bike sharing buisness model has been gaining mass popularity around the world. Allowing users to rent bikes in various location and flexible times. Collecting each bike rider's information can help businesses predict and establish patterns among their customers.
 
-### Description
-Describe what your project is about and what it does
+## Description
 
-### Files used
-Include the files used
+Explore data related to bike share systems for three major cities in the United States: Chicago, New York City, and Washington. With this data analysis we can answer a variety of indepth questions. The script takes the raw input to create an interactive experience in the terminal to present these statistics like listed below.
 
-### Credits
-It's important to give proper credit. Add links to any repo that inspired you or blogposts you consulted.
+1) The most pouplar month.
+2) The most popular day of week.
+3) The most popular start hour.
+4) The most popular Start and End Station.
+
+## Files used
+
+3 CSV files for the major cities of Chicago, New york City and Washington. The files are named as chicago.csv, new_york_city.csv, washington.csv
+
+## Credits
+
+Udacity's platfomrm for Python programing for Data Science.
+
+Data frames in Python https://stackoverflow.com/questions/53037698/how-can-i-find-the-most-frequent-two-column-combination-in-a-dataframe-in-python
 
